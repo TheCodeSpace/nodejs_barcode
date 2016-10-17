@@ -18,7 +18,7 @@ prompt.get(['pCode', 'usrCode'], function (err, result) {
   var pCodeString = result.pCode.replace('P', '');
   var pCode = parseInt(pCodeString);
   var requestType = result.usrCode.charAt(0);
-  var q = "UPDATE `TheCodeSpace_inventory_overview` SET In=In+1 WHERE id=" + pCode.toString();
+  var q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+1 WHERE id=" + pCode.toString();
 
   console.log(pCode, result.usrCode, requestType);
   connection.query(q, function(err, rows, fields) {
