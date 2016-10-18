@@ -19,24 +19,43 @@ function stuff() {
         var userCode = readlineSync.question('User code: ');
         var requestType = userCode.charAt(0);
         var q;
+        var done = false;
         if (requestType == 'I') {
             q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+1, `Out`=`Out`-1 WHERE id=" + productCode.toString();
         } else if (requestType == 'U') {
             q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-1, `Out`=`Out`+1 WHERE id=" + productCode.toString();
         }
+        else {
+          if (userCode == 'ADM1N') {
+            var userCode = readlineSync.question('User code: ');
+            var requestType = userCode.charAt(0);
+            if (requestType == 'I') {
+                q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+1 WHERE id=" + productCode.toString();
+            } else if (requestType == 'U') {
+                q = "UPDATE `TheCodeSpace_inventory_overview` SET `Out`=`Out`+1 WHERE id=" + productCode.toString();
+            }
+            else {
+              console.log('error');
+            }
+          }
+        }
         console.log(productCode, userCode, requestType);
         connection.query(q, function(err, rows, fields) {
-            console.log('done');
+            if (!err) {
+              console.log('done');
+              done = true;
+            }
+            again = readlineSync.question('again? [y/n]');
+            if (again == 'y') {
+              stuff();
+            }
+            else if (again == 'n') {
+              connection.end();
+            }
+            else {
+              console.log('error');
+            }
         });
-        var again = readlineSync.question('again? [y/n]');
-        if (again == 'y') {
-          stuff();
-        }
-        else if (again == 'n') {
-          connection.end();
-        }
-        else {
-          console.log('error');
-        }
+
     }
 stuff();
