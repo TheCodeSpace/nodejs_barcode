@@ -24,56 +24,55 @@ function stuff() {
     var quantity = 1;
 
     if (requestType == 'Q') {
-      quantity = parseInt(readlineSync.question('Quantity: ');
-    }
-    else if (requestType == 'I') {
-        q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + ", `Out`=`Out`-" + quantity + " WHERE id=" + productCode.toString();
-    } else if (requestType == 'U') {
-        q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + ", `Out`=`Out`+" + quantity + " WHERE id=" + productCode.toString();
-    } else {
-        //
-        //ADMIN MODE
-        if (userCode == 'ADM1N') {
-            console.log('\n==[ ADMIN MODE ACTIVATED ]==');
-            adminMode = true;
-            var userCode = readlineSync.question('User code: ');
-            var requestType = userCode.charAt(0);
-            if (requestType == 'Q') {
-              quantity = readlineSync.question('Quantity: ');
+        quantity = parseInt(readlineSync.question('Quantity: ');
+        }
+        else if (requestType == 'I') {
+            q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + ", `Out`=`Out`-" + quantity + " WHERE id=" + productCode.toString();
+        } else if (requestType == 'U') {
+            q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + ", `Out`=`Out`+" + quantity + " WHERE id=" + productCode.toString();
+        } else {
+            //
+            //ADMIN MODE
+            if (userCode == 'ADM1N') {
+                console.log('\n==[ ADMIN MODE ACTIVATED ]==');
+                adminMode = true;
+                var userCode = readlineSync.question('User code: ');
+                var requestType = userCode.charAt(0);
+                if (requestType == 'Q') {
+                    quantity = readlineSync.question('Quantity: ');
+                } else if (requestType == 'I') {
+                    q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
+                } else if (requestType == 'U') {
+                    q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
+                } else {
+                    console.log('error');
+                    connection.end();
+                }
             }
-            else if (requestType == 'I') {
-                q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
-            } else if (requestType == 'U') {
-                q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
+        }
+        var date = new Date();
+        console.log(date);
+        console.log(productCode, userCode);
+        var userCodeParsed = userCode.substring(1);
+        connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity` `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            }
+        });
+        connection.query(q, function(err, rows, fields) {
+            if (!err) {
+                console.log('done');
+                done = true;
+            }
+            again = readlineSync.question('again? [y/n]');
+            if (again == 'y') {
+                stuff();
+            } else if (again == 'n') {
+                connection.end();
             } else {
                 console.log('error');
-                connection.end();
             }
-        }
-    }
-    var date = new Date();
-    console.log(date);
-    console.log(productCode, userCode);
-    var userCodeParsed = userCode.substring(1);
-    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity` `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-        }
-    });
-    connection.query(q, function(err, rows, fields) {
-        if (!err) {
-            console.log('done');
-            done = true;
-        }
-        again = readlineSync.question('again? [y/n]');
-        if (again == 'y') {
-            stuff();
-        } else if (again == 'n') {
-            connection.end();
-        } else {
-            console.log('error');
-        }
-    });
+        });
 
-}
-stuff();
+    }
+    stuff();
