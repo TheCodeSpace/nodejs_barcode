@@ -21,19 +21,12 @@ function stuff() {
     var q;
     var adminMode = false;
     var done = false;
-    var quantity = '1';
-    if (requestType == 'Q') {
-        quantity = readlineSync.question('Quantity: ');
-        userCode = readlineSync.question('User code: ');
-    }
-    requestType = userCode.charAt(0);
+    var quantity = readlineSync.question('Quantity: ');
+
     if (requestType == 'I') {
         q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + ", `Out`=`Out`-" + quantity + " WHERE id=" + productCode.toString();
     } else if (requestType == 'U') {
         q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + ", `Out`=`Out`+" + quantity + " WHERE id=" + productCode.toString();
-    } else if (requestType == 'Q') {
-        quantity = readlineSync.question('Quantity: ');
-
     } else {
         //
         //ADMIN MODE
@@ -63,6 +56,8 @@ function stuff() {
             console.log(err);
         }
     });
+    //console.log("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')");
+
     connection.query(q, function(err, rows, fields) {
         if (!err) {
             console.log('done');
