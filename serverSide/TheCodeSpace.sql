@@ -26,11 +26,12 @@ CREATE TABLE `TheCodeSpace_inventory_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `User` int(11) DEFAULT NULL,
   `Product` int(11) DEFAULT NULL,
+  `Quantity` int(11) DEFAULT NULL,
   `Action` varchar(11) DEFAULT '',
   `Admin` tinyint(1) DEFAULT NULL,
   `Date` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +40,7 @@ CREATE TABLE `TheCodeSpace_inventory_history` (
 
 LOCK TABLES `TheCodeSpace_inventory_history` WRITE;
 /*!40000 ALTER TABLE `TheCodeSpace_inventory_history` DISABLE KEYS */;
-INSERT INTO `TheCodeSpace_inventory_history` VALUES (2,21,1,'U',0,NULL),(3,21,1,'I',0,NULL),(4,21,2,'U',0,NULL),(5,21,1,'I',0,NULL),(6,1,1,'I',0,NULL),(7,21,1,'U',0,'Tue Oct 18 2016 19:2'),(8,21,1,'U',0,'Tue Oct 18 2016 19:3'),(9,1,1,'I',0,'Tue Oct 18 2016 19:3'),(10,1,1,'I',1,'Tue Oct 18 2016 19:3');
+INSERT INTO `TheCodeSpace_inventory_history` VALUES (2,21,1,NULL,'U',0,NULL),(3,21,1,NULL,'I',0,NULL),(4,21,2,NULL,'U',0,NULL),(5,21,1,NULL,'I',0,NULL),(6,1,1,NULL,'I',0,NULL),(7,21,1,NULL,'U',0,'Tue Oct 18 2016 19:2'),(8,21,1,NULL,'U',0,'Tue Oct 18 2016 19:3'),(9,1,1,NULL,'I',0,'Tue Oct 18 2016 19:3'),(10,1,1,NULL,'I',1,'Tue Oct 18 2016 19:3'),(11,21,1,NULL,'I',0,'Tue Oct 18 2016 21:3'),(12,21,1,NULL,'I',1,'Tue Oct 18 2016 21:3'),(13,21,1,1,'U',0,'Wed Oct 19 2016 12:5'),(14,21,1,1,'I',0,'Wed Oct 19 2016 12:5'),(15,21,1,1,'I',0,'Wed Oct 19 2016 13:0'),(16,2,1,3,'I',0,'Wed Oct 19 2016 13:4'),(17,21,1,2,'U',0,'Wed Oct 19 2016 14:0');
 /*!40000 ALTER TABLE `TheCodeSpace_inventory_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,7 +67,7 @@ CREATE TABLE `TheCodeSpace_inventory_overview` (
 
 LOCK TABLES `TheCodeSpace_inventory_overview` WRITE;
 /*!40000 ALTER TABLE `TheCodeSpace_inventory_overview` DISABLE KEYS */;
-INSERT INTO `TheCodeSpace_inventory_overview` VALUES (1,'Arduino Nano','An Arduino.',3,7),(2,'LED',NULL,97,23);
+INSERT INTO `TheCodeSpace_inventory_overview` VALUES (1,'Arduino Nano','An Arduino.',4,7),(2,'LED',NULL,97,23);
 /*!40000 ALTER TABLE `TheCodeSpace_inventory_overview` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -79,4 +80,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-18 20:33:27
+-- Dump completed on 2016-10-19 17:03:43
