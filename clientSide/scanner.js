@@ -25,8 +25,8 @@ function stuff() {
     if (requestType == 'Q') {
         quantity = readlineSync.question('Quantity: ');
         userCode = readlineSync.question('User code: ');
-        requestType = userCode.charAt(0);
     }
+    requestType = userCode.charAt(0);
     if (requestType == 'I') {
         q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + ", `Out`=`Out`-" + quantity + " WHERE id=" + productCode.toString();
     } else if (requestType == 'U') {
@@ -56,7 +56,7 @@ function stuff() {
     }
     var date = new Date();
     console.log(date);
-    console.log(productCode, userCode);
+    console.log(productCode, userCode, quantity);
     var userCodeParsed = userCode.substring(1);
     connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "');", function(err, rows, fields) {
         if (err) {
