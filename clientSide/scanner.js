@@ -21,9 +21,10 @@ function stuff() {
     var q;
     var adminMode = false;
     var done = false;
-    var quantity = readlineSync.question('Quantity: ');
+    var quantity = '1'
 
     if (requestType == 'Q') {
+      quantity = readlineSync.question('Quantity: ');
       userCode = null;
       userCode = readlineSync.question('User code: ');
     }
@@ -62,7 +63,7 @@ function stuff() {
             console.log(err);
         }
     });
-    console.log("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')");
+    //console.log("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')");
 
     connection.query(q, function(err, rows, fields) {
         if (!err) {
