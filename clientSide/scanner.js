@@ -10,7 +10,13 @@ var connection = mysql.createConnection({
     port: '8889'
 });
 
-connection.connect();
+connection.connect(function(err){
+  if(err){
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('connected as id ' + connection.threadId);
+});
 
 function stuff() {
     var productCodeIn = readlineSync.question('Product code: ');
@@ -47,10 +53,10 @@ function stuff() {
             } else if (requestType == 'I') {
                 q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
             } else if (requestType == 'U') {
-                q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + " WHERE id=" + productCode.toString();
+                q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + " WHERE id=" + productCode.toString();
             } else {
                 console.log('error');
-                connection.end();
+                process.exit(1);
             }
         }
     }
@@ -74,7 +80,7 @@ function stuff() {
         if (again == 'y') {
             stuff();
         } else if (again == 'n') {
-            connection.end();
+            process.exit(1);
         } else {
             console.log('error');
         }
