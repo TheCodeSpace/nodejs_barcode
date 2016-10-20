@@ -10,13 +10,15 @@ var connection = mysql.createConnection({
     port: '8889'
 });
 
-connection.connect(function(err){
-  if(err){
-    console.error('error connecting: ' + err.stack);
-    return;
-  }
-  console.log('connected as id ' + connection.threadId);
+connection.connect(function(err) {
+    if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
+    console.log('connected as id ' + connection.threadId);
 });
+
+
 
 function stuff() {
     var productCodeIn = readlineSync.question('Product code: ');
@@ -27,12 +29,17 @@ function stuff() {
     var q;
     var adminMode = false;
     var done = false;
-    var quantity = '1'
+    var quantity = '1';
+    var sMode = false;
 
     if (requestType == 'Q') {
-      quantity = readlineSync.question('Quantity: ');
-      userCode = null;
-      userCode = readlineSync.question('User code: ');
+        quantity = readlineSync.question('Quantity: ');
+        userCode = null;
+        userCode = readlineSync.question('User code: ');
+    }
+    if (requestType == 'S') {
+        q = "SELECT * FROM TheCodeSpace_inventory_overview WHERE `id`=" + productCode;
+        sMode = true;
     }
     requestType = null;
     requestType = userCode.charAt(0);
@@ -62,16 +69,22 @@ function stuff() {
     }
     var date = new Date();
     console.log(date);
-    console.log(productCode, userCode, quantity);
+    //console.log(productCode, userCode, quantity);
     var userCodeParsed = userCode.substring(1);
-    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-        }
-    });
+    if (!sMode) {
+        connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    }
+
     //console.log("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')");
 
     connection.query(q, function(err, rows, fields) {
+        if (sMode) {
+            console.log("NO. " + rows[0].id + " | " + rows[0].Name + " | IN: " + rows[0].In + " | OUT: " + rows[0].Out);
+        }
         if (!err) {
             console.log('done');
             done = true;
