@@ -18,6 +18,33 @@ connection.connect(function(err){
   console.log('connected as id ' + connection.threadId);
 });
 
+
+// BEGIN TEST AREA
+//
+//
+var productCodeIn = readlineSync.question('Product code: ');
+var productCodeString = productCodeIn.replace('P', '');
+var productCode = parseInt(productCodeString);
+var userCode = readlineSync.question('User code: ');
+var requestType = userCode.charAt(0);
+var q;
+var adminMode = false;
+var done = false;
+var quantity = '1'
+
+if (requestType == 'S') {
+  q = "SELECT * FROM TheCodeSpace_inventory_overview WHERE `id`=" + productCode;
+}
+connection.query(q, function(err, rows, fields) {
+    if (!err) {
+        console.log('done');
+    }
+});
+//
+//
+// END TEST AREA
+
+/* DISABLED FOR TESTING
 function stuff() {
     var productCodeIn = readlineSync.question('Product code: ');
     var productCodeString = productCodeIn.replace('P', '');
@@ -88,3 +115,4 @@ function stuff() {
 
 }
 stuff();
+*/
