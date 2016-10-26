@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
     user: 'root',
     password: 'root',
     database: 'TheCodeSpace_inventory',
-    port: '3306'
+    port: '8889'
 });
 
 connection.connect(function(err) {
@@ -19,10 +19,12 @@ connection.connect(function(err) {
     }
     console.log('connected as id ' + connection.threadId);
 });
+var userCode;
+var requestType;
 
 function userCodeFunc() {
-    var userCode = readlineSync.question('User code: ');
-    var requestType = userCode.charAt(0);
+    userCode = readlineSync.question('User code: ');
+    requestType = userCode.charAt(0);
 
     if (requestType == 'I') {
         mainIFunc();
@@ -37,8 +39,8 @@ function userCodeFunc() {
     if (userCode == 'ADM1N') {
         console.log('\n==[ ADMIN MODE ACTIVATED ]==');
         adminMode = true;
-        var userCode = readlineSync.question('User code: ');
-        var requestType = userCode.charAt(0);
+        userCode = readlineSync.question('User code: ');
+        requestType = userCode.charAt(0);
 
         if (requestType == 'I') {
             mainIFunc();
@@ -70,13 +72,26 @@ function mainIFunc() {
 
     var date = new Date();
     var userCodeParsed = userCode.substring(1);
-    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-        }
-    });
-    mainIFunc();
+
+
+        connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            } else {
+                done = true;
+            }
+        });
+
+    again = readlineSync.question('again? [y/n]');
+    if (again == 'y') {
+        mainIFunc();
+    } else if (again == 'n') {
+        process.exit(1);
+    } else {
+        console.log('error');
+    }
 }
+
 
 function mainUFunc() {
     var productCodeIn = readlineSync.question('Product code: ');
@@ -91,11 +106,24 @@ function mainUFunc() {
 
     var date = new Date();
     var userCodeParsed = userCode.substring(1);
-    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-        }
-    });
 
+        console.log("please wait");
+        connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            } else {
+                done = true;
+            }
+        });
+        again = readlineSync.question('again? [y/n]');
+        if (again == 'y') {
+            mainIFunc();
+        } else if (again == 'n') {
+            process.exit(1);
+        } else {
+            console.log('error');
+        }
+    
     mainUFunc();
 }
+userCodeFunc();
