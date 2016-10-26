@@ -20,36 +20,41 @@ connection.connect(function(err) {
     console.log('connected as id ' + connection.threadId);
 });
 
-
-var userCode = readlineSync.question('User code: ');
-var requestType = userCode.charAt(0);
-
-if (requestType == 'I') {
-	mainIFunc();
-} else if (requestType == 'U') {
-	mainUFunc();
-} else {
-	console.log('error');
-	process.exit(1);
-}
-
-
-if (userCode == 'ADM1N') {
-    console.log('\n==[ ADMIN MODE ACTIVATED ]==');
-    adminMode = true;
+function userCodeFunc() {
     var userCode = readlineSync.question('User code: ');
     var requestType = userCode.charAt(0);
 
-	if (requestType == 'I') {
-		mainIFunc();
-	} else if (requestType == 'U') {
-		mainUFunc();
-	} else {
-		console.log('error');
-		process.exit(1);
-	}
+    if (requestType == 'I') {
+        mainIFunc();
+    } else if (requestType == 'U') {
+        mainUFunc();
+    } else {
+        console.log('error');
+        process.exit(1);
+    }
+
+
+    if (userCode == 'ADM1N') {
+        console.log('\n==[ ADMIN MODE ACTIVATED ]==');
+        adminMode = true;
+        var userCode = readlineSync.question('User code: ');
+        var requestType = userCode.charAt(0);
+
+        if (requestType == 'I') {
+            mainIFunc();
+        } else if (requestType == 'U') {
+            mainUFunc();
+        } else {
+            console.log('error');
+            process.exit(1);
+        }
+    }
+    connection.query(q, function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+        }
+    });
 }
-	
 
 
 function mainIFunc() {
@@ -60,13 +65,17 @@ function mainIFunc() {
     var done = false;
     var quantity = '1';
 
-	
+
     q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`+" + quantity + ", `Out`=`Out`-" + quantity + " WHERE id=" + productCode.toString();
-	
-	var date = new Date();
+
+    var date = new Date();
     var userCodeParsed = userCode.substring(1);
-	connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')");
-	mainIFunc();
+    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+        }
+    });
+    mainIFunc();
 }
 
 function mainUFunc() {
@@ -77,17 +86,16 @@ function mainUFunc() {
     var done = false;
     var quantity = '1';
 
-	
-    q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + ", `Out`=`Out`+" + quantity + " WHERE id=" + productCode.toString();
-    
-	var date = new Date();
-    var userCodeParsed = userCode.substring(1);
-	connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
-	if (err) {
-        console.log(err);
-	}
-    });
-	
-	mainUFunc();
-}
 
+    q = "UPDATE `TheCodeSpace_inventory_overview` SET `In`=`In`-" + quantity + ", `Out`=`Out`+" + quantity + " WHERE id=" + productCode.toString();
+
+    var date = new Date();
+    var userCodeParsed = userCode.substring(1);
+    connection.query("INSERT INTO `TheCodeSpace_inventory_history` (`User`, `Product`, `Quantity`, `Action`, `Admin`, `Date`) VALUES (" + userCodeParsed + ", " + productCode + ", " + quantity + ", '" + requestType + "', " + adminMode + ", '" + date + "')", function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+        }
+    });
+
+    mainUFunc();
+}
