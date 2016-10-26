@@ -2,6 +2,7 @@ var mysql = require('mysql');
 var prompt = require('prompt');
 var readlineSync = require('readline-sync');
 var quantity = 1;
+var adminMode = false;
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -19,26 +20,26 @@ connection.connect(function(err) {
     console.log('connected as id ' + connection.threadId);
 });
 
-function userCodeFunc() {
-	var userCode = readlineSync.question('User code: ');
-    var requestType = userCode.charAt(0);
-	
-	if (userCode == 'ADM1N') {
-        console.log('\n==[ ADMIN MODE ACTIVATED ]==');
-        adminMode = true;
-        var userCode = readlineSync.question('User code: ');
-        var requestType = userCode.charAt(0);
 
-		if (requestType == 'I') {
-			mainIFunc();
-		} else if (requestType == 'U') {
-			mainUFunc();
-		} else {
-			console.log('error');
-			process.exit(1);
-		}
-    }
-	
+var userCode = readlineSync.question('User code: ');
+var requestType = userCode.charAt(0);
+
+if (requestType == 'I') {
+	mainIFunc();
+} else if (requestType == 'U') {
+	mainUFunc();
+} else {
+	console.log('error');
+	process.exit(1);
+}
+
+
+if (userCode == 'ADM1N') {
+    console.log('\n==[ ADMIN MODE ACTIVATED ]==');
+    adminMode = true;
+    var userCode = readlineSync.question('User code: ');
+    var requestType = userCode.charAt(0);
+
 	if (requestType == 'I') {
 		mainIFunc();
 	} else if (requestType == 'U') {
@@ -48,6 +49,7 @@ function userCodeFunc() {
 		process.exit(1);
 	}
 }
+	
 
 
 function mainIFunc() {
@@ -89,4 +91,3 @@ function mainUFunc() {
 	mainUFunc();
 }
 
-userCodeFunc();
